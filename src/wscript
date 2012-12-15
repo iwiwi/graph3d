@@ -1,0 +1,8 @@
+# -*- python -*-
+
+def build(bld):
+  bld.program(
+    source       = 'graph.cc layout.cc common.cc display.cc interaction.cc main.cc redsvd/util.cpp',
+    target       = '../main',
+    uselib       = 'libs',
+    includes     = '.')
