@@ -9,7 +9,7 @@ vector<vector<int> > A;     // Adjacent lists
 
 // Layout
 vector<vec3d> pos;
-vector<double> color;
+vector<vec3d> color;
 vector<double> vertex_alpha;
 
 double norm(const vec3d &v) {
@@ -31,3 +31,6 @@ vec3d normalize(const vec3d &v) {
 double dot(const vec3d &a, const vec3d &b) {
   return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 }
+
+// Command Line Arguments
+cmdline::parser cmdline_parser;

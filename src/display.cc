@@ -4,7 +4,8 @@ using namespace std;
 
 namespace display {
 int head = 0, pitch = 0;
-double edge_alpha = 0.3;
+//double edge_alpha = 0.3;
+double edge_alpha = 0.6;
 
 vec3d camera_direction, camera_axis_up, camera_axis_right;
 double camera_distance = 10.0;
@@ -37,6 +38,8 @@ inline void glColor4d_HSV(double h, double s, double v, double a) {
 }
 
 void Display() {
+  //glClearColor(1.0, 1.0, 1.0, 0.0);
+  glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
 
   glEnable(GL_BLEND);
@@ -89,9 +92,12 @@ void Display() {
   for (size_t i = 0; i < E.size(); ++i) {
     int u = E[edge_order[i].second].first, v = E[edge_order[i].second].second;
     //glColor4d_HSV(e / (double)E.size(), 1.0, 1.0, edge_alpha);
-    glColor4d_HSV(color[u], 1.0, 1.0, edge_alpha * vertex_alpha[u]);
+    // glColor4d_HSV(color[u], 1.0, 1.0, edge_alpha * vertex_alpha[u]);
+    // glColor4d_HSV(color[u], 1.0, 1.0, edge_alpha * vertex_alpha[u]);
+    glColor4d(color[u][0], color[u][1], color[u][2], edge_alpha * vertex_alpha[u]);
     glVertex3d(pos[u][0], pos[u][1], pos[u][2]);
-    glColor4d_HSV(color[v], 1.0, 1.0, edge_alpha * vertex_alpha[v]);
+    //glColor4d_HSV(color[v], 1.0, 1.0, edge_alpha * vertex_alpha[v]);
+    glColor4d(color[v][0], color[v][1], color[v][2], edge_alpha * vertex_alpha[v]);
     glVertex3d(pos[v][0], pos[v][1], pos[v][2]);
   }
   glEnd();

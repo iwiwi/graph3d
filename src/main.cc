@@ -1,4 +1,7 @@
 #include "common.h"
+#include "cmdline.h"
+
+using namespace std;
 
 double get_current_time_sec() {
   struct timeval tv;
@@ -11,8 +14,21 @@ void Timer(int value) {
   glutTimerFunc(50, Timer, 0);
 }
 
+void InitComandlineParser(int argc, char **argv) {
+  cmdline_parser.add<string>("graph",  'g', "input file", true);
+  cmdline_parser.add<string>("color_file",  0, "color", false);
+  cmdline_parser.add<bool>("layout_2d",  0, "3D -> 2D?", false);
+
+  if (cmdline_parser.parse(argc, argv) == 0){
+    cerr << cmdline_parser.error() << endl
+         << cmdline_parser.usage() << endl;
+    exit(EXIT_FAILURE);
+  }
+}
+
 int main(int argc, char *argv[]) {
-  graph::LoadGraph(argv[1]);
+  InitComandlineParser(argc, argv);
+  graph::LoadGraph(cmdline_parser.get<string>("graph").c_str());
 
   display::InitDisplay();
   layout::InitLayout();

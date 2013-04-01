@@ -30,14 +30,24 @@ int LoadEdgeList(std::istream &in,
       edges.insert(make_pair(min(s, t), max(s, t)));
     }
   } else if (2 == sscanf(first_line.c_str(), "%d%lu", &num_v, &num_e)) {
+    // fprintf(stderr, "format: edge lists\n");
     // V E
     // v_1 w_1
     // v_2 w_2
     // ...
-    for (size_t i = 0; i < num_e; ++i) {
-      int s, t;
-      in >> s >> t;
-      edges.insert(make_pair(min(s, t), max(s, t)));
+    size_t lines = 0;
+    int max_v = 0;
+    for (int s, t; in >> s >> t; lines++) {
+      edges.insert(make_pair(s, t));
+      max_v = max(max_v, max(s, t));
+    }
+    if (lines == num_e) {
+      // OK, the first line was "V E"
+      // fprintf(stderr, "format: oops, actually the first line was V E\n");
+    } else {
+      // !!, the first line was actually "v_0 w_0"
+      edges.insert(make_pair(num_v, (int)num_e));
+      num_v = max_v + 1;
     }
   } else if (1 == sscanf(first_line.c_str(), "%d", &num_v)) {
     int s, t;

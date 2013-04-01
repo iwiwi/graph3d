@@ -1,6 +1,6 @@
 # -*- python -*-
 
-APPNAME= 'graph_draw'
+APPNAME= 'graph3d'
 VERSION= '0.0.1'
 
 top = '.'

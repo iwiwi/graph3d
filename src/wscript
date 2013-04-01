@@ -2,7 +2,7 @@
 
 def build(bld):
   bld.program(
-    source       = 'graph.cc layout.cc common.cc display.cc interaction.cc main.cc redsvd/util.cpp',
-    target       = '../main',
+    source       = 'graph.cc layout.cc common.cc display.cc interaction.cc main.cc',
+    target       = '../graph3d',
     uselib       = 'libs',
     includes     = '.')

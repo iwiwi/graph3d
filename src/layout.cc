@@ -512,34 +512,91 @@ double Step() {
 }
 }  // nemespace barnes_hut
 
+
+//
+// Color (-> color.cc ?)
+//
+namespace coloring {
+inline vec3d MakeVec3d(double a, double b, double c) {
+  vec3d v(0.0, 3);
+  v[0] = a;
+  v[1] = b;
+  v[2] = c;
+  return v;
+}
+
+inline vec3d HSVtoRGB(double h, double s, double v) {
+  int i = floor(h * 6.0);
+  double f = h * 6.0 - i;
+  if (i % 2 == 0) f = 1.0 - f;
+  double m = v * (1.0 - s), n = v * (1.0 - s * f);
+  switch (i % 6) {
+    case 0: return MakeVec3d(v, n, m);
+    case 1: return MakeVec3d(n, v, m);
+    case 2: return MakeVec3d(m, v, n);
+    case 3: return MakeVec3d(m, n, v);
+    case 4: return MakeVec3d(n, m, v);
+    case 5: return MakeVec3d(v, m, n);
+  }
+  assert(false);
+}
+
+inline vec3d HSVtoRGB(vec3d &hsv) {
+  return HSVtoRGB(hsv[0], hsv[1], hsv[2]);
+}
+
+void Color() {
+  int max_deg = 0;
+  for (int v = 0; v < V; ++v) max_deg = max(max_deg, (int)A[v].size());
+
+  vertex_alpha.resize(V);
+  for (int v = 0; v < V; ++v) {
+    vertex_alpha[v] = 0.5 + 0.5 * A[v].size() / (double)max_deg;
+    // log(adj[v].size()) / log(max_deg);
+  }
+
+  color.resize(V, vec3d(0.0, 3));
+
+  if (!cmdline_parser.get<string>("color_file").empty()) {
+    ifstream ifs(cmdline_parser.get<string>("color_file").c_str());
+    vector<int> gs(V);
+    for (int v = 0; v < V; ++v) ifs >> gs[v];
+    int G = max(1, *max_element(gs.begin(), gs.end()));
+    for (int v = 0; v < V; ++v) {
+      if (gs[v] == 0) {
+        color[v] = HSVtoRGB(0.0, 0.0, 0.0);
+        vertex_alpha[v] = 0.1;
+      } else {
+        color[v] = HSVtoRGB(gs[v] / (double)G, 1.0, 0.9);
+      }
+    }
+  } else {
+    for (int v = 0; v < V; ++v) {
+      color[v] = HSVtoRGB(A[v].size() / (double)max_deg, 1.0, 1.0);
+      //color[v] = HSVtoRGB(0.3, A[v].size() / (double)max_deg, 0.5);
+      vertex_alpha[v] = log(A[v].size()) / log(max_deg);
+    }
+  }
+}
+}
+
 //
 // Entry points
 //
 void InitLayout() {
-  int max_deg = 0;
-  for (int v = 0; v < V; ++v) max_deg = max(max_deg, (int)A[v].size());
-
   speed.resize(V, vec3d(0.0, 3));
   pos.resize(V, vec3d(0.0, 3));
 
+  srand(12);
+
   for (int v = 0; v < V; ++v) {
     for (int i = 0; i < 3; ++i) {
-      pos[v][i] = (rand() / (double)RAND_MAX - 0.5);  // * (max_deg - A[v].size()) / (double)max_deg;
+      pos[v][i] = (rand() / (double)RAND_MAX - 0.5);  // * (max_deg - A[v].size()) / (ndouble)max_deg;
     }
   }
 
   // spectral::SpectralLayout();
-
-  vertex_alpha.resize(V);
-  for (int v = 0; v < V; ++v) {
-    vertex_alpha[v] = 0.5 + 0.5 * A[v].size() / (double)max_deg;  //log(adj[v].size()) / log(max_deg);
-  }
-
-  color.resize(V);
-  for (int v = 0; v < V; ++v) {
-    color[v] = A[v].size() / (double)max_deg;  //log(adj[v].size()) / log(max_deg);
-  }
-
+  coloring::Color();
 
   for (int i = 0; i < 30; ++i) {
     naive_force::Step3();
@@ -547,6 +604,7 @@ void InitLayout() {
 }
 
 void *LayoutThread(void *arg) {
+
   for (int i = 0; i < 300; ++i) {
     //naive_force::Step3();
   }
@@ -556,11 +614,17 @@ void *LayoutThread(void *arg) {
     }
   }
 
-  for (;;) {
+  bool is_2d = cmdline_parser.get<bool>("layout_2d");
+  if (is_2d) {
+    for (int v = 0; v < V; ++v) pos[v][2] = 0.0;
+    for (int v = 0; v < V; ++v) speed[v][2] = 0.0;
+  }
+
+  for (int iter = 0; iter < 100; ++iter) {
     //naive_force::Step();
-    //naive_force::Step2();
-    //barnes_hut::Step();
-    //naive_force::Step3();
+    // naive_force::Step2();
+    // barnes_hut::Step();
+    // naive_force::Step3();
 
     simd_naive_force::SIMDStep();
     usleep(1);

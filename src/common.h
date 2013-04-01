@@ -1,3 +1,5 @@
+#pragma once
+
 #include <GL/freeglut.h>
 #include <sys/time.h>
 #include <sys/utsname.h>
@@ -5,6 +7,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <stdarg.h>
+#include <string>
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
@@ -20,6 +23,7 @@
 #include <cstdlib>
 #include <cassert>
 #include <numeric>
+#include "cmdline.h"
 
 typedef std::valarray<double> vec3d;
 
@@ -58,8 +62,10 @@ extern int V;
 extern std::vector<std::pair<int, int> > E;
 extern std::vector<std::vector<int> > A;
 extern std::vector<vec3d> pos;
-extern std::vector<double> color;
+extern std::vector<vec3d> color;
 extern std::vector<double> vertex_alpha;  // [0, 1] (multiplied by |edge_alpha|)
+
+extern cmdline::parser cmdline_parser;
 
 double norm(const vec3d&);
 double abs(const vec3d&);
