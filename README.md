@@ -21,11 +21,9 @@ freeglut が必要です．Linux で動作確認をしていますが，Mac で�
 例
 ----------------
 
-![画像1](http://www-imai.is.s.u-tokyo.ac.jp/~takiba/img/graph_cagrqc.png)
-
-![画像2](http://www-imai.is.s.u-tokyo.ac.jp/~takiba/img/graph_reactome.png)
-
-![画像3](http://www-imai.is.s.u-tokyo.ac.jp/~takiba/img/graph_arxiv.png)
+![画像1](http://www-imai.is.s.u-tokyo.ac.jp/~takiba/img/graph_cagrqc_w200.png)
+　![画像2](http://www-imai.is.s.u-tokyo.ac.jp/~takiba/img/graph_reactome_w200.png)
+　![画像3](http://www-imai.is.s.u-tokyo.ac.jp/~takiba/img/graph_arxiv_w200.png)
 
 
 謝辞
